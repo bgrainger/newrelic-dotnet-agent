@@ -152,7 +152,11 @@ namespace NewRelic.Agent.Extensions.Providers.Wrapper
                 transaction.Hold();
             }
 
-            if (options == TaskContinueWithOption.None)
+            if (task.IsCompleted)
+            {
+                EndSegment(task);
+            }
+            else if (options == TaskContinueWithOption.None)
             {
                 if (!continuationOptions.HasValue) task.ContinueWith(EndSegment);
                 else task.ContinueWith(EndSegment, continuationOptions.Value);
